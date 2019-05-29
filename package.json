@@ -1,0 +1,6 @@
+{
+  "main": "index.js",
+  "dependencies": {
+    "mathsteps": "^0.2.0"
+  }
+}
