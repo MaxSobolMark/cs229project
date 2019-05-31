@@ -6,7 +6,7 @@ from Naked.toolshed.shell import muterun_js
 
 SEPARATOR_CHAR = '||' # Signaling where a step ends and another begins
 
-def main(original_dataset_directory, steps_dataset_directory, train_modes):
+def main(original_dataset_directory, steps_dataset_directory, train_modes, start_index, end_index):
 	# Preprocess paths
 	original_dataset_directory = os.path.abspath(original_dataset_directory)
 	steps_dataset_directory = os.path.abspath(steps_dataset_directory)
@@ -18,9 +18,9 @@ def main(original_dataset_directory, steps_dataset_directory, train_modes):
 		print('\tnumbers_div_remainder successful')
 		generate_polynomials_evaluate(original_dataset_directory, steps_dataset_directory, mode)
 		print('\tpolynomials_evaluate successful')
-		generate_arithmetic_mixed(original_dataset_directory, steps_dataset_directory, mode)
+		generate_arithmetic_mixed(original_dataset_directory, steps_dataset_directory, mode, start_index, end_index)
 		print('\tarithmetic_mixed successful')
-		generate_polynomials_simplify_power(original_dataset_directory, steps_dataset_directory, mode)
+		generate_polynomials_simplify_power(original_dataset_directory, steps_dataset_directory, mode, start_index, end_index)
 		print('\tpolynomails_simplify_power successful')
 
 
@@ -87,7 +87,7 @@ def generate_polynomials_evaluate(original_dataset_directory, steps_dataset_dire
 					write_file.write(question + new_answer + '\n')
 					question = task_file.readline()
 
-def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_directory, mode):
+def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_directory, mode, start_index, end_index):
 	# Example question: Simplify (t*t/(t**(-3/8)*t*t))**(1/3)/(t**16)**(-9) assuming t is positive.
 	if mode is not 'extrapolate': # extrapolate is the only mode not supported by the original dataset
 		task_path = os.path.join(original_dataset_directory, mode, 'arithmetic__mixed.txt')
@@ -103,8 +103,15 @@ def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_director
 		
 		with open(task_path) as task_file:
 			with open(write_path, 'a') as write_file:
+				# Skip to the start_index
+				# There are two lines for each training sample (question and answer)
+				for _ in range(start_index * 2):
+					task_file.readline()
+				
+				i = start_index
+
 				question = task_file.readline()
-				while question:
+				while question and i <= end_index:
 					print('started question')
 					answer = task_file.readline()
 					# Get the numbers part
@@ -120,8 +127,9 @@ def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_director
 
 					write_file.write(question + new_answer + '\n')
 					question = task_file.readline()
+					i += 1
 
-def generate_polynomials_simplify_power(original_dataset_directory, steps_dataset_directory, mode):
+def generate_polynomials_simplify_power(original_dataset_directory, steps_dataset_directory, mode, start_index, end_index):
 	# Example question: Simplify (t*t/(t**(-3/8)*t*t))**(1/3)/(t**16)**(-9) assuming t is positive.
 	if mode is not 'extrapolate': # extrapolate is the only mode not supported by the original dataset
 		task_path = os.path.join(original_dataset_directory, mode, 'polynomials__simplify_power.txt')
@@ -137,8 +145,13 @@ def generate_polynomials_simplify_power(original_dataset_directory, steps_datase
 		
 		with open(task_path) as task_file:
 			with open(write_path, 'a') as write_file:
+				for _ in range(start_index * 2):
+					task_file.readline()
+				
+				i = start_index
+
 				question = task_file.readline()
-				while question:
+				while question and i <= end_index:
 					print('started question')
 					answer = task_file.readline()
 					# Get the polynomial part
@@ -156,6 +169,8 @@ def generate_polynomials_simplify_power(original_dataset_directory, steps_datase
 					write_file.write(question + new_answer + '\n')
 					question = task_file.readline()
 
+					i += 1
+
 
 
 if __name__ == '__main__':
@@ -166,5 +181,9 @@ if __name__ == '__main__':
 						help='The directory in which the modified dataset will be written.')
 	parser.add_argument('train_modes', nargs='+', type=str,
 						help='List every mode to generate. Options: extrapolate, interpolate, train-easy, train-medium, train-hard')
+	parser.add_argument('start_index', type=int,
+						help='Index to start generating the dataset')
+	parser.add_argument('end_index', type=int,
+						help='Index to stop generating the dataset')
 	args = parser.parse_args()
-	main(args.original_dataset_directory, args.steps_dataset_directory, args.train_modes)
+	main(args.original_dataset_directory, args.steps_dataset_directory, args.train_modes, int(args.start_index), int(args.end_index))
