@@ -119,6 +119,7 @@ def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_director
 					#print('polynomial: {}'.format(polynomial))
 					
 					# Call mathsteps
+					print(polynomial)
 					response = muterun_js('mathsteps.js', polynomial)
 					if response.exitcode is not 0:
 						print('ERROR WITH INTERFACING WITH MATHSTEPS: ', response.stderr)
