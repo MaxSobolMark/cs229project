@@ -40,7 +40,7 @@ def generate_numbers_div_remainder(original_dataset_directory, steps_dataset_dir
 			os.makedirs(write_directory)
 		
 		with open(task_path) as task_file:
-			with open(write_path, 'a') as write_file:
+			with open(write_path, 'a', newline='\n') as write_file:
 				question = task_file.readline()
 				while question:
 					answer = task_file.readline()
@@ -67,7 +67,7 @@ def generate_polynomials_evaluate(original_dataset_directory, steps_dataset_dire
 			os.makedirs(write_directory)
 		
 		with open(task_path) as task_file:
-			with open(write_path, 'a') as write_file:
+			with open(write_path, 'a', newline='\n') as write_file:
 				question = task_file.readline()
 				while question:
 					answer = task_file.readline()
@@ -102,7 +102,7 @@ def generate_arithmetic_mixed(original_dataset_directory, steps_dataset_director
 			os.makedirs(write_directory)
 		
 		with open(task_path) as task_file:
-			with open(write_path, 'a') as write_file:
+			with open(write_path, 'a', newline='\n') as write_file:
 				# Skip to the start_index
 				# There are two lines for each training sample (question and answer)
 				for _ in range(start_index * 2):
@@ -144,7 +144,7 @@ def generate_polynomials_simplify_power(original_dataset_directory, steps_datase
 			os.makedirs(write_directory)
 		
 		with open(task_path) as task_file:
-			with open(write_path, 'a') as write_file:
+			with open(write_path, 'a', newline='\n') as write_file:
 				for _ in range(start_index * 2):
 					task_file.readline()
 				
