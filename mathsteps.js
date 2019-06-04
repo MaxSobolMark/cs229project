@@ -1,6 +1,6 @@
-import { simplifyExpression } from 'mathsteps';
+const mathsteps = require('mathsteps');
 
-const steps = simplifyExpression(process.argv[2].replace(/\*\*/g, '^'));
+const steps = mathsteps.simplifyExpression(process.argv[2].replace(/\*\*/g, '^'));
 //console.log(process.argv[2])
 //console.log(typeof(process.argv[2]))
 //console.log(steps)
